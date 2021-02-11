@@ -3,18 +3,19 @@ from django.urls import path,include
 from rest_framework.authtoken.views import obtain_auth_token
 from .userviews import *
 
+import django_rest_passwordreset.urls
 
 urlpatterns = [
-    path('Adduser/', AddNewUser.as_view()),
-    path('GetAllUser/', GetAllUser.as_view()),
-    path('ValidateUser/', ValidateUser.as_view()),
+    path('addUser/', AddNewUser.as_view()),
+    path('getAllUser/', GetAllUser.as_view()),
+    path('validateUser/', ValidateUser.as_view()),
     path('updateUser/<int:id>/',UpdateUser.as_view()),
     path('changePassword/', ChangePasswordView.as_view(), name='change-password'),
     path('passwordReset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('logout/', Logout.as_view()),
 
-    path('AddRole/', AddNewRole.as_view()),
-    path('GetAllRoles/', GetAllRoles.as_view()),
+    path('addRole/', AddNewRole.as_view()),
+    path('getAllRoles/', GetAllRoles.as_view()),
 
     path('offices/',OfficeList.as_view()),
     path('offices/<int:pk>',OfficeDetail.as_view()),

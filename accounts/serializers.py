@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id','username','first_name', 'last_name', 'email','treasury_code','designation','profile_pic','phone_no','work_place']
+        fields = ['username','first_name', 'last_name', 'email','treasury_code','designation','profile_pic','phone_no','office']
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -61,7 +61,7 @@ class AddRoleSerializer(serializers.ModelSerializer):
 class OfficeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Office
-        fields = ['office_name','office_address']
+        fields = ['office_name','office_address','district']
 
 
 class DesignationSerializer(serializers.ModelSerializer):

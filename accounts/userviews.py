@@ -31,13 +31,14 @@ class AddNewUser(APIView):
         #     return Response({"data":"","success":False, "error": "Email cannot be empty"})
         # if  first_name == None or first_name == "":
         #     return Response({"data":"","success":False,"error":"first_name cannot be empty"})
-        try:
-            data = usercontroller.add_user(request)
-        except ValueError:
-            return Response({"data":"","success" : False,"error" : "username already exist"})
-        except (AttributeError, IOError) as e:
-            return Response({"data":"","success" : False,"error" : "Email or details are invalid"})
-        return Response({"data":data,"success":True, "error":" "})
+        data = usercontroller.add_user(request)
+        # except ValueError:
+        #     return Response({"data":"","success" : False,"error" : "username already exist"})
+        # except (AttributeError, IOError) as e:
+        #     return Response({"data":"","success" : False,"error" : "Email or details are invalid"})
+        # except Exception as e:
+        #     return Response({'data':'','success':True,'error':str(e)})
+        return Response(data)
 
 
 class GetAllUser(APIView):
@@ -82,7 +83,7 @@ class UpdateUser(APIView):
 
     def patch(self,request,id):
         data = usercontroller.update_user(request,id)
-        return Response({'data':data,'success':True,'error':''})
+        return Response(data)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
@@ -325,4 +326,5 @@ class ArticleDetail(APIView):
     def get(self,request,pk):
         data = usercontroller.get_article_detail(request,pk)
         return Response(data)
+
 

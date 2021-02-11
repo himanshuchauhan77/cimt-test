@@ -7,6 +7,7 @@ User = get_user_model()
 
 
 class NatureOfMisconduct(models.Model):
+    """ Model for Nature Of Misconduct"""
     type = models.CharField(max_length=200)
     description = models.TextField()
 
@@ -14,6 +15,7 @@ class NatureOfMisconduct(models.Model):
 
 
 class SourceOfComplaint(models.Model):
+    """Model for Source of Complaint"""
     type = models.CharField(max_length=200)
     description = models.TextField()
 
@@ -25,6 +27,7 @@ def current_year():
 
 
 class CaseIdentity(models.Model):
+    """ Model for CaseIdentity """
     file_number = models.IntegerField()
     file_year = models.IntegerField(default=current_year)
     office = models.ForeignKey('accounts.Office', on_delete=models.CASCADE, related_name="office_cases", default="")
@@ -79,6 +82,7 @@ class Article(models.Model):
 
 
 class DraftArticle(models.Model):
+    """Table for DraftArticle"""
     draft_article_no = models.ForeignKey(Article,on_delete=models.CASCADE)
     gist_of_article = models.TextField()
     date_of_misconduct = models.DateField()
@@ -92,11 +96,13 @@ def draft_article_directory_path(instance):
 
 
 class DraftArticleAttachments(models.Model):
+    """ Model for DraftArticle Attachments"""
     draft_article = models.ForeignKey(DraftArticle,on_delete=models.CASCADE,related_name='enquiry_attachments')
     attachment = models.FileField(upload_to=draft_article_directory_path)
 
 
 class PreliminaryEnquiry(models.Model):
+    """ Table for Preliminary Enquiry"""
     enquiry_officer = models.CharField(max_length=100)
     report_date = models.DateField(auto_now=True)
     office = models.ForeignKey('accounts.office',on_delete=models.CASCADE)
@@ -112,6 +118,7 @@ def draft_article_preliminary_enquiry_directory_path(instance):
 
 
 class PrelinminaryEnquiryAttachments(models.Model):
+    """ Model for Preliminary Enquiry Attachments """
     premilinary_enquiry = models.ForeignKey(PreliminaryEnquiry,on_delete=models.CASCADE,related_name='enquiry_attachments')
     attachment = models.FileField(upload_to=draft_article_preliminary_enquiry_directory_path)
 
@@ -120,9 +127,10 @@ class PrelinminaryEnquiryAttachments(models.Model):
 
 
 class Case(models.Model):
+    """ Table for ChargeSheet """
     STATUS = [
         ('COMPLETE','Complete'),
-        ('PENDING','Pending'),
+        ('ONGOING','Ongoing'),
     ]
     case_id = models.AutoField(primary_key=True)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -131,21 +139,27 @@ class Case(models.Model):
     charged_officer = models.ManyToManyField(ChargedOfficer,related_name='charged_officer_cases')
     # draft_chargesheet_proposal = models.OneToOneField(DraftChargeSheetProposal,on_delete=models.CASCADE,related_name='chargesheet_case')
     draft_article = models.ManyToManyField(DraftArticle,related_name='article_cases')
-    status = models.CharField(max_length=10,choices=STATUS)
+    status = models.CharField(max_length=10,choices=STATUS,default='ONGOING')
 
     # def __str__(self):
     #     return self.status
 
-# class Evidence(models.Model):
-#
-#     case_no = models.ForeignKey(Case,on_delete=models.CASCADE)
-#     evidence_image = models.ImageField(upload_to=f'{case_directory_path}/evidences/')
-#     evidence_name = models.CharField(max_length=100)
-#     evidence_desc = models.CharField(max_length=200)
-#
-#     def __str__(self):
-#         return self.evidence_name
-#
+
+def case_directory_path(instance):
+    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    return 'case_{0}/'.format(instance.case_no.case_id)
+
+
+class Evidence(models.Model):
+    """ Table for Evidence for ChargeSheet """
+    case_no = models.ForeignKey(Case,on_delete=models.CASCADE)
+    evidence_image = models.ImageField(upload_to=f'{case_directory_path}/evidences/')
+    evidence_name = models.CharField(max_length=100)
+    evidence_desc = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.evidence_name
+
 #
 # def draft_directory_path(instance):
 #     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -162,6 +176,7 @@ class Case(models.Model):
 
 
 class DraftChargeSheetProposal(models.Model):
+    """ Table for DraftChargeSheet """
     file_rc_no = models.BigIntegerField()
     date = models.DateField(default=timezone.now)
     submitted_by = models.ForeignKey('accounts.Office',on_delete=models.CASCADE,related_name="office_submitted_by")
@@ -176,6 +191,7 @@ def draft_directory_path(instance):
 
 
 class DraftSheetAttachment(models.Model):
+    """ Table for DraftSheet Attachment"""
     draft_no = models.ForeignKey(DraftChargeSheetProposal,on_delete=models.CASCADE)
     attachment = models.FileField(upload_to=draft_directory_path)
 

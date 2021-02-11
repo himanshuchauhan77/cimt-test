@@ -1,6 +1,9 @@
 # from django.core.files.storage import FileSystemStorage
 # from django.http import JsonResponse
 # from django.db import IntegrityError
+import json
+
+from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import JSONParser
 from .models import Office,Designation,District
 from . import serializers
@@ -14,7 +17,7 @@ from rest_framework.authtoken.models import Token
 
 
 def get_all_users():
-    data = User.objects.all().order_by("id").values()
+    data = User.objects.all().order_by("treasury_code").values()
     serializer = serializers.UserSerializer(data,many=True)
     # print(serializer.data)
     return ({"data": serializer.data, "success": True, "error": ""})
@@ -46,49 +49,50 @@ def add_user(request):
     # kwarg = dict(serializers.data)  # serializer.data is a dictionary
     # username = kwarg.pop("username")
     # email = kwarg.pop(("email"))
-    if serializer.is_valid(raise_exception=True):
-        username = serializer.validated_data.get('username')
-        email = serializer.validated_data.get('email')
-        rand_password = User.objects.make_random_password()
-        user = None
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            pass
-        finally:
-            if user is not None:
-                raise ValueError
-        try:
-            user = User.objects.get(username=username.lower())
-        except User.DoesNotExist:
-            pass
-        finally:
-            if user is not None:
-                raise ValueError
-        password = make_password(rand_password)
-    # new_user = User(**kwarg)
-    # new_user.username = username
-    # new_user.email = email
-    # new_user.password = password
-    # new_user.save()
-        serializer.save(password=password)
-        mail.send(
-            [email, ],
-            subject='Welcome',
-            message=f"Hi your password is {rand_password}",
-            priority='now',
-        )
-        # data = "user created, password has been sent to your mail"
-        print(serializer.errors)
-        return (serializer.data)
+    try:
+        if serializer.is_valid(raise_exception=True):
+            username = serializer.validated_data.get('username')
+            email = serializer.validated_data.get('email')
+            rand_password = User.objects.make_random_password()
+            user = None
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                pass
+            finally:
+                if user is not None:
+                    raise ValueError
+            try:
+                user = User.objects.get(username=username.lower())
+            except User.DoesNotExist:
+                pass
+            finally:
+                if user is not None:
+                    raise ValueError
+            password = make_password(rand_password)
+            serializer.save(password=password)
+            mail.send(
+                [email, ],
+                subject='Welcome',
+                message=f"Hi your password is {rand_password}",
+                priority='now',
+            )
+    except Exception as e:
+        data = {'data':'','success':False,'error':str(e)}
+    else:
+        data = {'data':serializer.data,'success':True,'error':''}
+    return data
 
 
 def update_user(request,id):
-    user = User.objects.get(id=id)
+    user = User.objects.get(treasury_code=id)
     serializer = serializers.UserSerializer(user,data=request.data,partial=True)
-    if serializer.is_valid():
-        serializer.save()
-        return serializer.data
+    try:
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return {'data':serializer.data,'success':True,'error':''}
+    except Exception as e:
+        return {'data':'','success':False,'error':str(e)}
 
 
 def userdetail(request,id):
@@ -97,15 +101,8 @@ def userdetail(request,id):
     return serializer.data
 
 
-
-
-
-
-
-
-
 def add_role(request):
-    serializer = serializers.AddRoleSerializer(request.data)
+    serializer = serializers.AddRoleSerializer(data=request.data)
     # id = kwarg.pop("id")
     # name = kwarg.pop("name")
     # description = kwarg.pop("description")

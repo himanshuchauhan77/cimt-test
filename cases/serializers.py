@@ -1,6 +1,6 @@
 from .models import CaseIdentity, ChargedOfficer, DraftChargeSheetProposal, \
-    DraftArticle, Case, NatureOfMisconduct, SourceOfComplaint, PreliminaryEnquiry,Article,ChargedOfficerAttachment\
-    ,PrelinminaryEnquiryAttachments,DraftSheetAttachment,DraftArticleAttachments
+    DraftArticle, Case, NatureOfMisconduct, SourceOfComplaint, PreliminaryEnquiry, Article, ChargedOfficerAttachment \
+    , PrelinminaryEnquiryAttachments, DraftSheetAttachment, DraftArticleAttachments, Evidence
 from accounts.serializers import OfficeSerializer
 from rest_framework import serializers
 from accounts.models import Office
@@ -14,10 +14,10 @@ User = get_user_model()
 #         fields = '__all__'
 #         exclude = ('created_date',)
 #
-# class AddEvidenceSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Evidence
-#         fields = '__all__'
+class AddEvidenceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evidence
+        fields = '__all__'
 
 
 class NatureOfMisconductSerializer(serializers.ModelSerializer):
@@ -60,7 +60,7 @@ class ChargedOfficerSerializer(serializers.ModelSerializer):
 class DraftChargeSheetProposalSerializer(serializers.ModelSerializer):
     class Meta:
         model = DraftChargeSheetProposal
-        fields = '__all__'
+        exclude = ('case',)
 
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -88,7 +88,7 @@ class DraftArticleSerializer(serializers.ModelSerializer):
 class CaseSerializer(serializers.ModelSerializer):
     case_identity = CaseIdentitySerializer(required=True)
     charged_officer = ChargedOfficerSerializer(many=True)
-    draft_chargesheet_proposal = DraftChargeSheetProposalSerializer(many=True)
+    draft_charge_sheets = DraftChargeSheetProposalSerializer(many=True)
     draft_article = DraftArticleSerializer(many=True)
 
     class Meta:
@@ -99,53 +99,45 @@ class CaseSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
 
         case_identities_data = validated_data.pop('case_identity', [])
-
         charged_officers_data = validated_data.pop('charged_officer', [])
-        # print(charged_officers_data)
-
         draft_chargesheet_proposals_data = validated_data.pop('draft_chargesheet_proposal', [])
-        # print(draft_chargesheet_proposals_data)
-
         draft_articles_data = validated_data.pop('draft_article', [])
-        # print(draft_articles_data)
-
         case_identity = CaseIdentitySerializer.create(CaseIdentitySerializer(), validated_data=case_identities_data)
         # draft_chargesheet_proposal = DraftChargeSheetProposalSerializer.create(DraftChargeSheetProposalSerializer(),validated_data=draft_chargesheet_proposals_data)
 
-        case,created = Case.objects.update_or_create(case_identity=case_identity,**validated_data)
+        case = Case.objects.create(case_identity=case_identity,**validated_data)
 
         officers = []
         for charged_officer_data in charged_officers_data:
-            charged_officer_attachments = charged_officer_data.pop('attachments', None)
+            # charged_officer_attachments = charged_officer_data.pop('attachments', None)
             charged_officer = ChargedOfficer.objects.create(**charged_officer_data)
-            for attachment_data in charged_officer_attachments:
-                attachment = ChargedOfficerAttachment.objects.create(charged_officer=charged_officer,attachment=attachment_data)
+            # for attachment_data in charged_officer_attachments:
+            #     attachment = ChargedOfficerAttachment.objects.create(charged_officer=charged_officer,attachment=attachment_data)
             officers.append(charged_officer)
         case.charged_officer.add(*officers)
 
         draft_chargesheet_proposals = []
         for draft_chargesheet_proposal_data in draft_chargesheet_proposals_data:
-            draft_chargesheet_proposal_attachments = draft_chargesheet_proposal_data.pop('attachments', None)
-            draft_sheet = DraftChargeSheetProposal.objects.create(**draft_chargesheet_proposal_data)
-            for attachment_data in draft_chargesheet_proposal_attachments:
-                attachment = DraftSheetAttachment.objects.create(draft_no=draft_sheet,attachment=attachment_data)
-            draft_chargesheet_proposals.append(draft_sheet)
-        case.draft_charge_sheets.add(*draft_chargesheet_proposals)
+            # draft_chargesheet_proposal_attachments = draft_chargesheet_proposal_data.pop('attachments', None)
+            draft_sheet = DraftChargeSheetProposal.objects.create(case=case,**draft_chargesheet_proposal_data)
+            # for attachment_data in draft_chargesheet_proposal_attachments:
+            #     attachment = DraftSheetAttachment.objects.create(draft_no=draft_sheet,attachment=attachment_data)
+            # draft_chargesheet_proposals.append(draft_sheet)
 
         draft_articles = []
         for draft_article_data in draft_articles_data:
             # article_no = draft_article_data.pop('draft_article_no')
             # article = Article.objects.get(article_no=article_no)
-            draft_article_attachments = draft_article_data.pop('attachments')
+            # draft_article_attachments = draft_article_data.pop('attachments')
             preliminary_enquiries_list = draft_article_data.pop('preliminary_enquiries')
             draft_article = DraftArticle.objects.create(**draft_article_data)
-            for draft_article_attachment in draft_article_attachments:
-                draft_attachment = DraftArticleAttachments.objects.create()
+            # for draft_article_attachment in draft_article_attachments:
+            #     draft_attachment = DraftArticleAttachments.objects.create()
             for enquiry in preliminary_enquiries_list:
-                preliminary_enquiry_attachments = enquiry.pop('attachments')
+                # preliminary_enquiry_attachments = enquiry.pop('attachments')
                 preliminary_enquiry = PreliminaryEnquiry.objects.create(draft_article=draft_article,**enquiry)
-                for enquiry_attachment in preliminary_enquiry_attachments:
-                    preliminary_enquiry_attachment = PrelinminaryEnquiryAttachments.objects.create(premilinary_enquiry= preliminary_enquiry,attachment=enquiry_attachment)
+                # for enquiry_attachment in preliminary_enquiry_attachments:
+                #     preliminary_enquiry_attachment = PrelinminaryEnquiryAttachments.objects.create(premilinary_enquiry= preliminary_enquiry,attachment=enquiry_attachment)
             # draft_article.preliminary_enquiries.set(preliminary_enquiries_list
             draft_articles.append(draft_article)
             case.draft_article.add(*draft_articles)

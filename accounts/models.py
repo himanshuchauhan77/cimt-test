@@ -97,12 +97,6 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
 
 
 
-
-
-
-
-
-
 # class PinCode(models.Model):
 #     pincode = models.BigIntegerField()
 #     is_active = models.BooleanField(default=True)
