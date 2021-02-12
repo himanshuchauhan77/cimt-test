@@ -124,7 +124,7 @@ def add_office(request):
     serializer = serializers.OfficeSerializer(data=data)
     print(serializer)
     try:
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
     except Exception as e:
         return {"data": " ", "success": False, "error": str(e)}

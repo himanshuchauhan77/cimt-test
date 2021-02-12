@@ -68,7 +68,7 @@ class UserProfile(AbstractUser):
                             message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     profile_pic = models.ImageField(upload_to='profile_pics/',null=True,blank=True)
     office = models.ForeignKey(Office,on_delete=models.CASCADE,null=True)
-    treasury_code = models.AutoField(primary_key=True)
+    treasury_code = models.CharField(max_length=200)
     designation = models.ForeignKey(Designation,on_delete=models.CASCADE,null=True)
     phone_no = models.CharField(max_length=17,validators=[phone_regex],default='')
 
