@@ -20,8 +20,10 @@ urlpatterns = [
     path('offices/',OfficeList.as_view()),
     path('offices/<int:pk>',OfficeDetail.as_view()),
 
+
     path('Designations/',DesignationList.as_view()),
     path('Designations/<int:pk>',DesignationDetail.as_view()),
+
 
     # path('Divisions/',DivisionList.as_view()),
     # path('Divisions/<int:pk>',DivisionDetail.as_view()),

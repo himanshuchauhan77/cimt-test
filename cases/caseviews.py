@@ -1,4 +1,5 @@
 # from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -115,3 +116,12 @@ class AddEvidence(APIView):
 #         data = get_cases_by_district(request,id)
 #         return JsonResponse(data)
 
+
+class UploadAttachment(APIView):
+    def post(self,request):
+        image = request.FILES.get('image')
+        if image:
+            fs = FileSystemStorage()
+            file = fs.save(f'case_attachmets_/{image.name}', image)
+            fileurl = fs.url(file)
+        return HttpResponse(f"Ok done {fileurl}")

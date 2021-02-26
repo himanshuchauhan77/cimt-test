@@ -1,11 +1,13 @@
+from django.core.files.storage import Storage
+
 from .models import CaseIdentity, ChargedOfficer, DraftChargeSheetProposal, \
-    DraftArticle, Case, NatureOfMisconduct, SourceOfComplaint, PreliminaryEnquiry, Article, ChargedOfficerAttachment \
-    , PrelinminaryEnquiryAttachments, DraftSheetAttachment, DraftArticleAttachments, Evidence
+    DraftArticle, Case, NatureOfMisconduct, SourceOfComplaint, PreliminaryEnquiry, Article, Evidence
 from accounts.serializers import OfficeSerializer
 from rest_framework import serializers
 from accounts.models import Office
 from django.contrib.auth import get_user_model
 User = get_user_model()
+from django.conf import settings
 
 
 # class CaseSerializer(serializers.ModelSerializer):
@@ -100,7 +102,7 @@ class CaseSerializer(serializers.ModelSerializer):
 
         case_identities_data = validated_data.pop('case_identity', [])
         charged_officers_data = validated_data.pop('charged_officer', [])
-        draft_chargesheet_proposals_data = validated_data.pop('draft_chargesheet_proposal', [])
+        draft_chargesheet_proposals_data = validated_data.pop('draft_charge_sheets', [])
         draft_articles_data = validated_data.pop('draft_article', [])
         case_identity = CaseIdentitySerializer.create(CaseIdentitySerializer(), validated_data=case_identities_data)
         # draft_chargesheet_proposal = DraftChargeSheetProposalSerializer.create(DraftChargeSheetProposalSerializer(),validated_data=draft_chargesheet_proposals_data)
@@ -109,10 +111,9 @@ class CaseSerializer(serializers.ModelSerializer):
 
         officers = []
         for charged_officer_data in charged_officers_data:
-            # charged_officer_attachments = charged_officer_data.pop('attachments', None)
+            # charged_officer_attachment_url = charged_officer_data.pop('attachment', None)
             charged_officer = ChargedOfficer.objects.create(**charged_officer_data)
-            # for attachment_data in charged_officer_attachments:
-            #     attachment = ChargedOfficerAttachment.objects.create(charged_officer=charged_officer,attachment=attachment_data)
+            # attachment = ChargedOfficerAttachment.objects.create(charged_officer=charged_officer,attachment=charged_officer_attachment)
             officers.append(charged_officer)
         case.charged_officer.add(*officers)
 

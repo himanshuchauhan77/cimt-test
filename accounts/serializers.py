@@ -61,7 +61,7 @@ class AddRoleSerializer(serializers.ModelSerializer):
 class OfficeSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Office
-        fields = ['office_name','office_address','district']
+        fields = ['office_name','office_address','district','id']
 
 
 class DesignationSerializer(serializers.ModelSerializer):

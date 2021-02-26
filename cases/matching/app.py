@@ -1,3 +1,4 @@
+import sys
 import cv2
 import os
 import numpy
@@ -108,7 +109,6 @@ def main(img):
 		# plt.imshow(img3)
 		# plt.show()
 
-
 # Calculate score
 		score = 0;
 		for match in matches:
@@ -126,12 +126,11 @@ def main(img):
 			plt.show()
 			is_matched = True
 			break
-
 	return is_matched
 
 
-# if __name__ == "__main__":
-# 	try:
-# 		main()
-# 	except:
-# 		raise
+if __name__ == "__main__":
+	try:
+		main(sys.argv[1])
+	except:
+		raise

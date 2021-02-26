@@ -35,17 +35,17 @@ class CaseIdentity(models.Model):
     source_of_complaint = models.ForeignKey(SourceOfComplaint, on_delete=models.CASCADE, related_name='source_of_complaint_cases')
     name_of_complainant = models.CharField(max_length=200)
     complainant_address = models.TextField()
-    # attachments = models.FileField()
+    case_identity_attachment = models.CharField(max_length=200)
 
 
-def case_identity_directory_path(instance):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'case_{0}/case_identity_attachments/'.format(instance.case_identity_case.case_id)
+# def case_identity_directory_path(instance):
+#     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+#     return 'case_{0}/case_identity_attachments/'.format(instance.case_identity_case.case_id)
 
 
-class CaseIdentityAttachment(models.Model):
-    case_identity = models.ForeignKey(CaseIdentity,on_delete=models.CASCADE)
-    attachment = models.FileField(upload_to=case_identity_directory_path)
+# class CaseIdentityAttachment(models.Model):
+#     case_identity = models.ForeignKey(CaseIdentity,on_delete=models.CASCADE)
+#     attachment = models.FileField(upload_to=case_identity_directory_path)
 
 # ------------------------------------------------------------------------------------
 
@@ -54,18 +54,19 @@ class ChargedOfficer(models.Model):
     """ Table for Charged Officer"""
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     previous_charges = models.TextField()
+    charged_officer_attachment = models.CharField(max_length=200)
+
+#
+# def charged_officer_directory_path(instance):
+#     """Function to return Charged officer attachements Directory"""
+#     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+#     return 'case_{0}/charged_officer_attachments/'.format(instance.charged_officer_cases.case_id)
 
 
-def charged_officer_directory_path(instance):
-    """Function to return Charged officer attachements Directory"""
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'case_{0}/charged_officer_attachments/'.format(instance.charged_officer_cases.case_id)
-
-
-class ChargedOfficerAttachment(models.Model):
-    """Model for Attachments with Charged Officer Table"""
-    charged_officer = models.ForeignKey(ChargedOfficer,on_delete=models.CASCADE)
-    attachment = models.FileField(upload_to=charged_officer_directory_path)
+# class ChargedOfficerAttachment(models.Model):
+#     """Model for Attachments with Charged Officer Table"""
+#     charged_officer = models.ForeignKey(ChargedOfficer,on_delete=models.CASCADE)
+#     attachment = models.FileField(upload_to=charged_officer_directory_path)
 
 
 # ------------------------------------------------------------------------------------
@@ -88,17 +89,17 @@ class DraftArticle(models.Model):
     date_of_misconduct = models.DateField()
     misconduct_type = models.ForeignKey(NatureOfMisconduct,on_delete=models.CASCADE)
     amount_involved_if_any = models.BigIntegerField
+    draft_article_attachment = models.CharField(max_length=200)
+
+# def draft_article_directory_path(instance):
+#     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+#     return 'case_{0}/draft_article_attachments/'.format(instance.article_cases.case_id)
 
 
-def draft_article_directory_path(instance):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'case_{0}/draft_article_attachments/'.format(instance.article_cases.case_id)
-
-
-class DraftArticleAttachments(models.Model):
-    """ Model for DraftArticle Attachments"""
-    draft_article = models.ForeignKey(DraftArticle,on_delete=models.CASCADE,related_name='enquiry_attachments')
-    attachment = models.FileField(upload_to=draft_article_directory_path)
+# class DraftArticleAttachments(models.Model):
+#     """ Model for DraftArticle Attachments"""
+#     draft_article = models.ForeignKey(DraftArticle,on_delete=models.CASCADE,related_name='enquiry_attachments')
+#     attachment = models.FileField(upload_to=draft_article_directory_path)
 
 
 class PreliminaryEnquiry(models.Model):
@@ -110,17 +111,17 @@ class PreliminaryEnquiry(models.Model):
     report_conclusion_breif = models.TextField()
     follow_up_action = models.TextField()
     draft_article = models.ForeignKey(DraftArticle,related_name="preliminary_enquiries",on_delete=models.CASCADE,default='')
+    preliminary_enquiry_attachment = models.CharField(max_length=200)
 
-
-def draft_article_preliminary_enquiry_directory_path(instance):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'case_{0}/draft_article_attachments/preliminary_enquiry_attachments'.format(instance.draft_article.article_cases.case_id)
-
-
-class PrelinminaryEnquiryAttachments(models.Model):
-    """ Model for Preliminary Enquiry Attachments """
-    premilinary_enquiry = models.ForeignKey(PreliminaryEnquiry,on_delete=models.CASCADE,related_name='enquiry_attachments')
-    attachment = models.FileField(upload_to=draft_article_preliminary_enquiry_directory_path)
+# def draft_article_preliminary_enquiry_directory_path(instance):
+#     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+#     return 'case_{0}/draft_article_attachments/preliminary_enquiry_attachments'.format(instance.draft_article.article_cases.case_id)
+#
+#
+# class PrelinminaryEnquiryAttachments(models.Model):
+#     """ Model for Preliminary Enquiry Attachments """
+#     premilinary_enquiry = models.ForeignKey(PreliminaryEnquiry,on_delete=models.CASCADE,related_name='enquiry_attachments')
+#     attachment = models.FileField(upload_to=draft_article_preliminary_enquiry_directory_path)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -183,16 +184,18 @@ class DraftChargeSheetProposal(models.Model):
     submitted_to = models.ForeignKey('accounts.Office',on_delete=models.CASCADE,related_name="officer_submitted_to")
     subject = models.TextField()
     case = models.ForeignKey(Case,on_delete=models.CASCADE,related_name='draft_charge_sheets')
+    draft_charge_sheet_proposal_attachments = models.CharField(max_length=200)
 
 
-def draft_directory_path(instance):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'case_{0}/draft_charge_sheet_attachments/'.format(instance.chargesheet_case.case_id)
+
+# def draft_directory_path(instance):
+#     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+#     return 'case_{0}/draft_charge_sheet_attachments/'.format(instance.chargesheet_case.case_id)
 
 
-class DraftSheetAttachment(models.Model):
-    """ Table for DraftSheet Attachment"""
-    draft_no = models.ForeignKey(DraftChargeSheetProposal,on_delete=models.CASCADE)
-    attachment = models.FileField(upload_to=draft_directory_path)
+# class DraftSheetAttachment(models.Model):
+#     """ Table for DraftSheet Attachment"""
+#     draft_no = models.ForeignKey(DraftChargeSheetProposal,on_delete=models.CASCADE)
+#     attachment = models.FileField(upload_to=draft_directory_path)
 
 

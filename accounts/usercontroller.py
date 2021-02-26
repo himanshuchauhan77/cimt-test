@@ -120,8 +120,8 @@ def get_all_roles():
 
 
 def add_office(request):
-    data = JSONParser().parse(request)
-    serializer = serializers.OfficeSerializer(data=data)
+    # data = JSONParser().parse(request)
+    serializer = serializers.OfficeSerializer(data=request.data)
     print(serializer)
     try:
         if serializer.is_valid(raise_exception=True):
@@ -155,8 +155,8 @@ def get_office_detail(request,pk):
 def update_office(request, pk):
     try:
         office = Office.objects.get(pk=pk)
-        data = JSONParser().parse(request)
-        serializer = serializers.OfficeSerializer(office, data)
+        # data = JSONParser().parse(request)
+        serializer = serializers.OfficeSerializer(office, data = request.data)
         if serializer.is_valid():
             serializer.save()
     except Office.DoesNotExist:
@@ -178,13 +178,6 @@ def delete_office(request, pk):
         return {"data": " ", "success": False, "error": str(e)}
     else:
         return {"data": " ", "success": True, "error": " "}
-
-
-
-
-
-
-
 
 
 #----------------------------------------------------

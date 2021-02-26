@@ -14,6 +14,7 @@ from rest_framework import generics
 # This method will return the currently active user model the custom user model if one is specified, or User otherwise.
 User = get_user_model()
 
+
 class AddNewUser(APIView):
     """
     Handles Adding a User and returns the added user details
@@ -131,7 +132,6 @@ class Logout(APIView):
         # simply delete the token to force a login
         request.user.auth_token.delete()
         return Response({'data':'User Logged Out','success':True,'error':''})
-
 
 
 # ------------------- Roles CRUD ------------------------#
