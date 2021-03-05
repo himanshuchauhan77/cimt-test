@@ -125,7 +125,7 @@ class UploadAttachment(APIView):
                 fs = FileSystemStorage()
                 file = fs.save(f'case_attachmets_/{image.name}', image)
                 fileurl = fs.url(file)
-            return Response({"data":f"{fileurl}","success":True,"error":""})
+            return Response({"data":{"url":f"{fileurl}"},"success":True,"error":""})
         except Exception as e:
             return Response({"data": "","success":True,"error":f"{str(e)}"})
 
