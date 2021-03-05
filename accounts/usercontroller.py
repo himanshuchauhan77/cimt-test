@@ -5,6 +5,8 @@ import json
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.parsers import JSONParser
+
+from cases.models import Article
 from .models import Office,Designation,District
 from . import serializers
 from django.contrib.auth.models import Group
@@ -157,7 +159,7 @@ def update_office(request, pk):
         office = Office.objects.get(pk=pk)
         # data = JSONParser().parse(request)
         serializer = serializers.OfficeSerializer(office, data = request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
     except Office.DoesNotExist:
         return {"data": " ", "success": True, "error": "Office Does Not Exist"}
@@ -188,7 +190,7 @@ def add_designation(request):
         data = JSONParser().parse(request)
         serializer = serializers.DesignationSerializer(data=data)
         print(serializer)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
     except Exception as e:
         return {"data": " ", "success": False, "error": str(e)}
@@ -208,7 +210,7 @@ def update_designation(request, pk):
         designation = Designation.objects.get(pk=pk)
         data = JSONParser().parse(request)
         serializer = serializers.DesignationSerializer(designation, data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
     except Designation.DoesNotExist:
         return {"data": " ", "success": True, "error": "Designation Does Not Exist"}
@@ -312,7 +314,7 @@ def add_district(request):
         data = JSONParser().parse(request)
         serializer = serializers.DistrictSerializer(data=data)
         print(serializer)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
     except Exception as e:
         return {"data": " ", "success": False, "error": str(e)}
@@ -332,7 +334,7 @@ def update_district(request, pk):
         district = District.objects.get(pk=pk)
         data = JSONParser().parse(request)
         serializer = serializers.DistrictSerializer(district, data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
     except District.DoesNotExist:
         return {"data": " ", "success": True, "error": "District Does Not Exist"}
@@ -423,12 +425,12 @@ def get_district_detail(request, pk):
 # #     else:
 # #         return  {"data":serializer.data,"success":True,"error":" "}
 # #
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 
 def add_article(request):
     serializer = serializers.ArticleSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
         serializer.save()
         return {'data':serializer.data,'success':True,'error':''}
     return {'data':'','success':False,'error':serializer.errors}
@@ -447,7 +449,7 @@ def update_article(request, pk):
         article = Article.objects.get(pk=pk)
         data = JSONParser().parse(request)
         serializer = serializers.ArticleSerializer(article, data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
     except Article.DoesNotExist:
         return {"data": " ", "success": True, "error": "Article Does Not Exist"}
@@ -468,4 +470,6 @@ def delete_article(request, pk):
         return {"data": " ", "success": False, "error": str(e)}
     else:
         return {"data": " ", "success": True, "error": " "}
+
+# -------------------------------------------------------------
 

@@ -146,15 +146,15 @@ class Case(models.Model):
     #     return self.status
 
 
-def case_directory_path(instance):
+def case_directory_path(instance,filename):
     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-    return 'case_{0}/'.format(instance.case_no.case_id)
+    return 'case_{0}/evidences/{1}'.format(instance.case_no.case_id,filename)
 
 
 class Evidence(models.Model):
     """ Table for Evidence for ChargeSheet """
     case_no = models.ForeignKey(Case,on_delete=models.CASCADE)
-    evidence_image = models.ImageField(upload_to=f'{case_directory_path}/evidences/')
+    evidence_image = models.ImageField(upload_to=case_directory_path)
     evidence_name = models.CharField(max_length=100)
     evidence_desc = models.CharField(max_length=200)
 

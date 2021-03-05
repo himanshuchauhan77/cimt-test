@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username','first_name', 'last_name', 'email','treasury_code','designation','profile_pic','phone_no','office']
+        fields = ['id','username','first_name', 'last_name', 'email','treasury_code','designation','profile_pic','phone_no','office']
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -47,8 +47,6 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 class CustomTokenSerializer(serializers.Serializer):
     token = serializers.CharField()
-
-
 
 
 class AddRoleSerializer(serializers.ModelSerializer):

@@ -12,6 +12,7 @@ from accounts.handler import check_email_is_valid
 from django.contrib.auth import get_user_model
 from rest_framework import generics
 # This method will return the currently active user model the custom user model if one is specified, or User otherwise.
+
 User = get_user_model()
 
 
@@ -269,8 +270,7 @@ class DesignationDetail(APIView):
 #         return JsonResponse(data)
 
 
-
-#-------------------CRUD for DISTRICT----------------------
+# -------------------CRUD for DISTRICT----------------------
 
 
 class DistrictList(APIView):
@@ -327,4 +327,5 @@ class ArticleDetail(APIView):
         data = usercontroller.get_article_detail(request,pk)
         return Response(data)
 
+# --------------------------------------------------------------------
 

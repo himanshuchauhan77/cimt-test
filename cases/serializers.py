@@ -1,5 +1,5 @@
 from django.core.files.storage import Storage
-
+from accounts.serializers import UserSerializer
 from .models import CaseIdentity, ChargedOfficer, DraftChargeSheetProposal, \
     DraftArticle, Case, NatureOfMisconduct, SourceOfComplaint, PreliminaryEnquiry, Article, Evidence
 from accounts.serializers import OfficeSerializer
@@ -27,15 +27,18 @@ class NatureOfMisconductSerializer(serializers.ModelSerializer):
         model = NatureOfMisconduct
         fields = '__all__'
 
+
 class SourceOfComplaintSerializer(serializers.ModelSerializer):
     class Meta:
         model = SourceOfComplaint
         fields = '__all__'
 
+
 class PreliminaryEnquirySerializer(serializers.ModelSerializer):
     class Meta:
         model = PreliminaryEnquiry
         fields = '__all__'
+
 
 class CaseIdentitySerializer(serializers.ModelSerializer):
     nature_of_misconduct = NatureOfMisconductSerializer
@@ -55,19 +58,24 @@ class CaseIdentitySerializer(serializers.ModelSerializer):
 
 
 class ChargedOfficerSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
     class Meta:
         model = ChargedOfficer
         fields = '__all__'
+
 
 class DraftChargeSheetProposalSerializer(serializers.ModelSerializer):
     class Meta:
         model = DraftChargeSheetProposal
         exclude = ('case',)
 
+
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
+
 
 class DraftArticleSerializer(serializers.ModelSerializer):
     preliminary_enquiries = PreliminaryEnquirySerializer(many=True)

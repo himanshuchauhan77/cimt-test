@@ -2,7 +2,9 @@ from django.db.models import Count, F
 import json
 from django.db.models.functions import TruncMonth
 import json
-from .serializers import CaseSerializer, AddEvidenceSerializer
+
+from . import serializers
+from .serializers import CaseSerializer, AddEvidenceSerializer, ChargedOfficerSerializer
 from .models import Case, NatureOfMisconduct, SourceOfComplaint, Article
 # from accounts.models import District
 from cases.matching import app
@@ -158,3 +160,83 @@ def add_evidence(request):
 #     cases = dist.district_cases.all().order_by("case_no").values()
 #     data = list(cases)
 #     return {"data": data, "success": True, "error": ""}
+
+
+def get_all_charged_officer(request):
+    case_id = request.data.get('case_id')
+    print(case_id)
+    charge_sheet = Case.objects.get(case_id=case_id)
+    all_charged_officers = charge_sheet.charged_officer.all()
+    serializer = ChargedOfficerSerializer(all_charged_officers,many=True)
+    return {"charged_officers":serializer.data,"success":True,"error":""}
+
+# --------------------------------------------------------------------------
+
+def add_misconduct_type(request):
+    # data = JSONParser().parse(request)
+    serializer = serializers.NatureOfMisconductSerializer(data=request.data)
+    try:
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+    except Exception as e:
+        return {"data": " ", "success": False, "error": str(e)}
+    return {"data": serializer.data, "success": True, "error": " "}
+
+
+def get_all_misconduct_type(request):
+    try:
+        data = list(NatureOfMisconduct.objects.all().order_by('id').values())
+    except Exception as e:
+        print(str(e))
+        return {"data": " ", "success": False, "error": str(e)}
+    return {"data": data, "success": True, "error": " "}
+
+
+def get_misconduct_type(request,pk):
+    try:
+        nature_of_misconduct = NatureOfMisconduct.objects.get(pk=pk)
+        serializer = serializers.NatureOfMisconductSerializer(nature_of_misconduct)
+    except NatureOfMisconduct.DoesNotExist:
+        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+    except Exception as e:
+        return {"data":" ","success":True,"error":str(e)}
+    else:
+        return {"data":serializer.data,"success":True,"error":" "}
+
+
+def update_misconduct_type(request, pk):
+    try:
+        nature_of_misconduct = NatureOfMisconduct.objects.get(pk=pk)
+        # data = JSONParser().parse(request)
+        serializer = serializers.NatureOfMisconductSerializer(nature_of_misconduct, data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+    except NatureOfMisconduct.DoesNotExist:
+        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+    except Exception as e:
+        return {"data": " ", "success": False, "error": str(e)}
+    else:
+        return {"data": serializer.data, "success": True, "error": " "}
+
+
+def delete_misconduct_type(request, pk):
+    try:
+        nature_of_misconduct = NatureOfMisconduct.objects.get(pk=pk)
+        nature_of_misconduct.delete()
+    except NatureOfMisconduct.DoesNotExist:
+        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+    except Exception as e:
+        return {"data": " ", "success": False, "error": str(e)}
+    else:
+        return {"data": "Misconduct Type Deleted Successfully ", "success": True, "error": " "}
+
+
+def get_all_chargesheet(request):
+    try:
+        cases = Case.objects.all().order_by('case_id')
+        print(cases)
+        serializer = CaseSerializer(cases,many=True)
+    except Exception as e:
+        print(str(e))
+        return json.dumps({"data": " ", "success": False, "error": str(e)})
+    return json.dumps({ "data": serializer.data,"success":True,"error":"" }, default=str)

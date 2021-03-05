@@ -120,10 +120,12 @@ def main(img):
 			f, axarr = plt.subplots(1, 2)
 			axarr[0].imshow(img4)
 			axarr[1].imshow(img5)
-			plt.show()
+			# plt.show()
+			plt.savefig('media/matching/keypoints.jpg')
 			img3 = cv2.drawMatches(img1, kp1, img2, kp2, matches, flags=2, outImg=None)
 			plt.imshow(img3)
-			plt.show()
+			# plt.show()
+			plt.savefig('media/matching/matching_fig.jpg')
 			is_matched = True
 			break
 	return is_matched

@@ -4,9 +4,9 @@ from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .casecontroller import add_case, get_all_natureofmisconduct, get_all_sourceofcomplaint, \
-    get_all_articles, get_case_detail, add_evidence
+    get_all_articles, get_case_detail, add_evidence, get_all_charged_officer, get_all_chargesheet
 from cases.casecontroller import get_cases_report, get_monthly_case_report, get_district_cases_report
-
+from cases import casecontroller
 # add_evidence,get_all_cases,get_all_evidence,get_cases_by_district
 # from . models import Evidence
 
@@ -125,3 +125,47 @@ class UploadAttachment(APIView):
             file = fs.save(f'case_attachmets_/{image.name}', image)
             fileurl = fs.url(file)
         return HttpResponse(f"Ok done {fileurl}")
+
+
+class GetAllChargedOfficer(APIView):
+
+    def post(self,request):
+        data = get_all_charged_officer(request)
+        return Response(data)
+
+
+# -------------------- CRUD for MISCONDUCT ------------------
+
+class MisconductTypeLIST(APIView):
+
+    def post(self, request):
+        data = casecontroller.add_misconduct_type(request)
+        return Response(data)
+
+    def get(self, request):
+        data = casecontroller.get_all_misconduct_type(request)
+        return Response(data)
+
+
+class MisconductTypeDetail(APIView):
+
+    def put(self, request, pk):
+        data = casecontroller.update_misconduct_type(request, pk)
+        return Response(data)
+
+    def delete(self, request, pk):
+        data = casecontroller.delete_misconduct_type(request, pk)
+        return Response(data)
+
+    def get(self,request,pk):
+        data = casecontroller.get_misconduct_type(request,pk)
+        return Response(data)
+
+
+# --------------------------------------------------
+
+class GetAllChargeSheet(APIView):
+
+    def get(self,request):
+        data = get_all_chargesheet(request)
+        return HttpResponse(data,content_type='application/json')
