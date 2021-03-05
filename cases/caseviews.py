@@ -120,11 +120,14 @@ class AddEvidence(APIView):
 class UploadAttachment(APIView):
     def post(self,request):
         image = request.FILES.get('image')
-        if image:
-            fs = FileSystemStorage()
-            file = fs.save(f'case_attachmets_/{image.name}', image)
-            fileurl = fs.url(file)
-        return HttpResponse(f"Ok done {fileurl}")
+        try:
+            if image:
+                fs = FileSystemStorage()
+                file = fs.save(f'case_attachmets_/{image.name}', image)
+                fileurl = fs.url(file)
+            return Response({"data":f"{fileurl}","success":True,"error":""})
+        except Exception as e:
+            return Response({"data": "","success":True,"error":f"{str(e)}"})
 
 
 class GetAllChargedOfficer(APIView):
