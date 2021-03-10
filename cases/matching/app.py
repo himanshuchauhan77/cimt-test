@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from .enhance import image_enhance
 from skimage.morphology import skeletonize
 from cimt import settings
+import time
+
 
 # os.chdir("/home/himanshu/python-fingerprint-recognition-master/")
 from cimt.settings import BASE_DIR
@@ -121,14 +123,27 @@ def main(img):
 			axarr[0].imshow(img4)
 			axarr[1].imshow(img5)
 			# plt.show()
-			plt.savefig('media/matching/keypoints.jpg')
+			if os.path.exists('media/matching/keypoints.jpg'):
+				file_path_keypoints = 'media/matching/keypoints_{}.jpg'.format(int(time.time()))
+				plt.savefig(file_path_keypoints)
+			else:
+				file_path_keypoints = 'media/matching/keypoints.jpg'
+				plt.savefig(file_path_keypoints)
+
 			img3 = cv2.drawMatches(img1, kp1, img2, kp2, matches, flags=2, outImg=None)
 			plt.imshow(img3)
 			# plt.show()
-			plt.savefig('media/matching/matching_fig.jpg')
+
+			if os.path.exists('media/matching/matching_fig.jpg'):
+				file_path_matching_fig = ('media/matching/matching_fig_{}.jpg').format(int(time.time()))
+				plt.savefig(file_path_matching_fig)
+			else:
+				file_path_matching_fig = ('media/matching/matching_fig.jpg')
+				plt.savefig(file_path_matching_fig)
 			is_matched = True
+			image = f'{settings.STATIC_URL}evidence_db/{image_path}'
 			break
-	return is_matched
+	return is_matched,image,file_path_keypoints,file_path_matching_fig
 
 
 if __name__ == "__main__":

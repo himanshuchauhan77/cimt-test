@@ -19,8 +19,8 @@ from rest_framework.authtoken.models import Token
 
 
 def get_all_users():
-    data = User.objects.all().order_by("treasury_code").values()
-    serializer = serializers.UserSerializer(data,many=True)
+    data = User.objects.all().order_by("treasury_code")
+    serializer = serializers.GetUserSerializer(data,many=True)
     # print(serializer.data)
     return ({"data": serializer.data, "success": True, "error": ""})
 
@@ -39,7 +39,7 @@ def validate_user(request):
         if not req_user.check_password(password):
             raise ValueError("Password Mismatched")
         token,_ = Token.objects.get_or_create(user=req_user)
-        userserializer = serializers.UserSerializer(req_user)
+        userserializer = serializers.GetUserSerializer(req_user)
         # data = {'name': req_user.username, 'firstname': req_user.first_name, 'lastname': req_user.last_name,
         #    'email': req_user.email, 'user_id': req_user.id}
         login(request, req_user)
@@ -47,7 +47,7 @@ def validate_user(request):
 
 
 def add_user(request):
-    serializer = serializers.UserSerializer(data=request.data)
+    serializer = serializers.AddUserSerializer(data=request.data)
     # kwarg = dict(serializers.data)  # serializer.data is a dictionary
     # username = kwarg.pop("username")
     # email = kwarg.pop(("email"))
@@ -87,7 +87,7 @@ def add_user(request):
 
 
 def update_user(request,id):
-    user = User.objects.get(treasury_code=id)
+    user = User.objects.get(id=id)
     serializer = serializers.UserSerializer(user,data=request.data,partial=True)
     try:
         if serializer.is_valid(raise_exception=True):
@@ -98,7 +98,7 @@ def update_user(request,id):
 
 
 def userdetail(request,id):
-    user = User.objects.get(treasury_code=id)
+    user = User.objects.get(id=id)
     serializer = serializers.UserSerializer(user)
     return serializer.data
 
@@ -135,11 +135,12 @@ def add_office(request):
 
 def get_all_office(request):
     try:
-        data = list(Office.objects.filter(is_active=True).order_by('office_name').values())
+        data = Office.objects.filter(is_active=True).order_by('office_name')
+        serializer = serializers.OfficeSerializer(data,many=True)
     except Exception as e:
         print(str(e))
         return {"data": " ", "success": False, "error": str(e)}
-    return {"data": data, "success": True, "error": " "}
+    return {"data": serializer.data, "success": True, "error": " "}
 
 
 def get_office_detail(request,pk):

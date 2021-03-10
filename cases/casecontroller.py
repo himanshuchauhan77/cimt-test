@@ -125,16 +125,17 @@ def add_evidence(request):
             # uploaded_file_url = fs.url(filename)
             print(serializer.validated_data)
             obj = serializer.save()
-            uploaded_file_url = f"localhost:8000{obj.evidence_image.url}"
+            uploaded_file_url = obj.evidence_image.url
             # print(obj.evidence_image.name)
             # print(obj.evidence_image)
             # print(uploaded_file_url)
             # path1 = os.path.abspath(f"{uploaded_file_url}")
             # print(path1)
             # urllib.request.urlretrieve(uploaded_file_url,f"/home/himanshu/djangofull/Workspace/cimt/cases/matching/evidence/")
-            match_status = app.main(f"{obj.evidence_image}")
+            match_status,img2,x,y = app.main(f"{obj.evidence_image}")
             if match_status:
-                return {"data": {"uploaded_file_url": f"{uploaded_file_url}", "match_status": f"{match_status}"},
+                return {"data": {"uploaded_file_url": f"{uploaded_file_url}", "match_status": f"{match_status}","matched_image":f"{img2}",\
+                                 "keypoints_fig":f"{x}","matching_fig":f"{y}"},
                         "success": True, "error": ""}
             else:
                 return {"data": {"uploaded_file_url": "", "match_status": f"{match_status}"},"success": True, "error": ""}

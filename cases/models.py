@@ -29,13 +29,14 @@ def current_year():
 class CaseIdentity(models.Model):
     """ Model for CaseIdentity """
     file_number = models.IntegerField()
-    file_year = models.IntegerField(default=current_year)
+    file_year = models.DateField(auto_now=True)
     office = models.ForeignKey('accounts.Office', on_delete=models.CASCADE, related_name="office_cases", default="")
     nature_of_misconduct = models.ForeignKey(NatureOfMisconduct, on_delete=models.CASCADE, related_name='nature_of_misconduct_cases')
     source_of_complaint = models.ForeignKey(SourceOfComplaint, on_delete=models.CASCADE, related_name='source_of_complaint_cases')
     name_of_complainant = models.CharField(max_length=200)
     complainant_address = models.TextField()
     case_identity_attachment = models.CharField(max_length=200)
+    case_identity_attachment_desc = models.TextField(null=True,blank=True)
 
 
 # def case_identity_directory_path(instance):
@@ -90,6 +91,7 @@ class DraftArticle(models.Model):
     misconduct_type = models.ForeignKey(NatureOfMisconduct,on_delete=models.CASCADE)
     amount_involved_if_any = models.BigIntegerField
     draft_article_attachment = models.CharField(max_length=200)
+    draft_article_attachment_desc = models.TextField()
 
 # def draft_article_directory_path(instance):
 #     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -112,6 +114,7 @@ class PreliminaryEnquiry(models.Model):
     follow_up_action = models.TextField()
     draft_article = models.ForeignKey(DraftArticle,related_name="preliminary_enquiries",on_delete=models.CASCADE,default='')
     preliminary_enquiry_attachment = models.CharField(max_length=200)
+    preliminary_enquiry_attachment_desc = models.TextField()
 
 # def draft_article_preliminary_enquiry_directory_path(instance):
 #     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -185,7 +188,7 @@ class DraftChargeSheetProposal(models.Model):
     subject = models.TextField()
     case = models.ForeignKey(Case,on_delete=models.CASCADE,related_name='draft_charge_sheets')
     draft_charge_sheet_proposal_attachments = models.CharField(max_length=200)
-
+    draft_charge_sheet_attachment_desc = models.TextField(null=True,blank=True)
 
 
 # def draft_directory_path(instance):

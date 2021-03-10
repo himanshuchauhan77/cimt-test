@@ -1,5 +1,5 @@
 from django.core.files.storage import Storage
-from accounts.serializers import UserSerializer
+from accounts.serializers import AddUserSerializer,GetUserSerializer
 from .models import CaseIdentity, ChargedOfficer, DraftChargeSheetProposal, \
     DraftArticle, Case, NatureOfMisconduct, SourceOfComplaint, PreliminaryEnquiry, Article, Evidence
 from accounts.serializers import OfficeSerializer
@@ -58,7 +58,7 @@ class CaseIdentitySerializer(serializers.ModelSerializer):
 
 
 class ChargedOfficerSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = GetUserSerializer()
 
     class Meta:
         model = ChargedOfficer

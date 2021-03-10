@@ -1,8 +1,8 @@
 from django.urls import path
 from django.conf import settings
-from .caseviews import AddCase, GetAllArticles, GetAllNatureOfMisconduct, GetSourceOfComplaint, GetCaseReport, \
+from .caseviews import AddCase, GetAllArticles, GetSourceOfComplaint, GetCaseReport, \
     GetDistrictReport, GetMonthlyCaseReport, GetCaseDetail, AddEvidence, UploadAttachment, GetAllChargedOfficer, \
-    MisconductTypeLIST, MisconductTypeDetail, GetAllChargeSheet
+    MisconductTypeLIST, MisconductTypeDetail, GetAllChargeSheet,FaceDetection
 from django.conf.urls.static import static
 
 urlpatterns = [
@@ -27,5 +27,7 @@ urlpatterns = [
     path('misconductType/', MisconductTypeLIST.as_view()),
     path('misconductType/<int:pk>', MisconductTypeDetail.as_view()),
 
+
+    path('faceDetection/',FaceDetection.as_view()),
 
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

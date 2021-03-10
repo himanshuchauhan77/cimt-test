@@ -1,4 +1,6 @@
 # from django.http import JsonResponse
+import subprocess
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from rest_framework.response import Response
@@ -23,10 +25,10 @@ class GetCaseDetail(APIView):
         return HttpResponse(data,content_type='application/json')
 
 
-class GetAllNatureOfMisconduct(APIView):
-    def get(self,request):
-        response = get_all_natureofmisconduct(request)
-        return Response(response)
+# class GetAllNatureOfMisconduct(APIView):
+#     def get(self,request):
+#         response = get_all_natureofmisconduct(request)
+#         return Response(response)
 
 
 class GetSourceOfComplaint(APIView):
@@ -165,10 +167,31 @@ class MisconductTypeDetail(APIView):
         return Response(data)
 
 
-# --------------------------------------------------
+# -----------GetAllCHargesheet------------------------------------
 
 class GetAllChargeSheet(APIView):
 
     def get(self,request):
         data = get_all_chargesheet(request)
         return HttpResponse(data,content_type='application/json')
+
+
+# ----------------- Face Detection -------------------------------
+
+
+class FaceDetection(APIView):
+
+    def get(self,request):
+        subprocess.call(['python',f'{settings.BASE_DIR}/cases/face_detection/src/faces.py'])
+        return HttpResponse("Executed")
+
+
+# ---------------------- Article CRUD -----------------------
+
+
+
+
+
+
+
+
