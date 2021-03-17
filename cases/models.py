@@ -35,7 +35,7 @@ class CaseIdentity(models.Model):
     source_of_complaint = models.ForeignKey(SourceOfComplaint, on_delete=models.CASCADE, related_name='source_of_complaint_cases')
     name_of_complainant = models.CharField(max_length=200)
     complainant_address = models.TextField()
-    case_identity_attachment = models.CharField(max_length=200)
+    case_identity_attachment = models.CharField(max_length=200,null=True,blank=True)
     case_identity_attachment_desc = models.TextField(null=True,blank=True)
 
 
@@ -55,7 +55,7 @@ class ChargedOfficer(models.Model):
     """ Table for Charged Officer"""
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     previous_charges = models.TextField()
-    charged_officer_attachment = models.CharField(max_length=200)
+    charged_officer_attachment = models.CharField(max_length=200,null=True,blank=True)
 
 #
 # def charged_officer_directory_path(instance):
@@ -90,7 +90,7 @@ class DraftArticle(models.Model):
     date_of_misconduct = models.DateField()
     misconduct_type = models.ForeignKey(NatureOfMisconduct,on_delete=models.CASCADE)
     amount_involved_if_any = models.BigIntegerField()
-    draft_article_attachment = models.CharField(max_length=200)
+    draft_article_attachment = models.CharField(max_length=200,null=True,blank=True)
     draft_article_attachment_desc = models.TextField()
 
 # def draft_article_directory_path(instance):
@@ -113,7 +113,7 @@ class PreliminaryEnquiry(models.Model):
     report_conclusion_breif = models.TextField()
     follow_up_action = models.TextField()
     draft_article = models.ForeignKey(DraftArticle,related_name="preliminary_enquiries",on_delete=models.CASCADE,default='')
-    preliminary_enquiry_attachment = models.CharField(max_length=200)
+    preliminary_enquiry_attachment = models.CharField(max_length=200,null=True,blank=True)
     preliminary_enquiry_attachment_desc = models.TextField(null=True,blank=True)
 
 
@@ -191,7 +191,7 @@ class DraftChargeSheetProposal(models.Model):
     submitted_to = models.ForeignKey('accounts.Office',on_delete=models.CASCADE,related_name="officer_submitted_to")
     subject = models.TextField()
     case = models.ForeignKey(Case,on_delete=models.CASCADE,related_name='draft_charge_sheets')
-    draft_charge_sheet_proposal_attachments = models.CharField(max_length=200)
+    draft_charge_sheet_proposal_attachments = models.CharField(max_length=200,null=True,blank=True)
     draft_charge_sheet_attachment_desc = models.TextField(null=True,blank=True)
 
 
