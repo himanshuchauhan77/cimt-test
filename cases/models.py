@@ -89,7 +89,7 @@ class DraftArticle(models.Model):
     gist_of_article = models.TextField()
     date_of_misconduct = models.DateField()
     misconduct_type = models.ForeignKey(NatureOfMisconduct,on_delete=models.CASCADE)
-    amount_involved_if_any = models.BigIntegerField
+    amount_involved_if_any = models.BigIntegerField()
     draft_article_attachment = models.CharField(max_length=200)
     draft_article_attachment_desc = models.TextField()
 
@@ -114,13 +114,15 @@ class PreliminaryEnquiry(models.Model):
     follow_up_action = models.TextField()
     draft_article = models.ForeignKey(DraftArticle,related_name="preliminary_enquiries",on_delete=models.CASCADE,default='')
     preliminary_enquiry_attachment = models.CharField(max_length=200)
-    preliminary_enquiry_attachment_desc = models.TextField()
+    preliminary_enquiry_attachment_desc = models.TextField(null=True,blank=True)
+
+
 
 # def draft_article_preliminary_enquiry_directory_path(instance):
 #     # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
 #     return 'case_{0}/draft_article_attachments/preliminary_enquiry_attachments'.format(instance.draft_article.article_cases.case_id)
-#
-#
+
+
 # class PrelinminaryEnquiryAttachments(models.Model):
 #     """ Model for Preliminary Enquiry Attachments """
 #     premilinary_enquiry = models.ForeignKey(PreliminaryEnquiry,on_delete=models.CASCADE,related_name='enquiry_attachments')
@@ -160,6 +162,8 @@ class Evidence(models.Model):
     evidence_image = models.ImageField(upload_to=case_directory_path)
     evidence_name = models.CharField(max_length=100)
     evidence_desc = models.CharField(max_length=200)
+    match_status = models.BooleanField(default=False)
+    matched_image = models.ImageField(upload_to=case_directory_path,null=True,blank=True)
 
     def __str__(self):
         return self.evidence_name
@@ -174,7 +178,7 @@ class Evidence(models.Model):
 #     draft_no = models.ForeignKey(DraftChargeSheetProposal,on_delete=models.CASCADE)
 #     case = models.ForeignKey(Case,on_delete=models.CASCADE)
 #     attachment = models.FileField(upload_to=draft_directory_path)
-#
+
 
 # ------------------------------------------------------------------
 

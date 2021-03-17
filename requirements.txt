@@ -13,6 +13,7 @@ matplotlib==3.3.3
 mysqlclient==2.0.3
 networkx==2.5
 numpy==1.19.4
+opencv-contrib-python==4.5.1.48
 opencv-python==4.4.0.46
 Pillow==8.0.1
 psycopg2==2.8.6

@@ -82,7 +82,6 @@ REST_FRAMEWORK = {
 }
 
 
-
 EMAIL_BACKEND = 'post_office.EmailBackend'
 DEFAULT_FROM_EMAIL = 'cimtgju@gmail.com'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -90,7 +89,6 @@ EMAIL_HOST_USER = 'cimtgju@gmail.com'
 EMAIL_HOST_PASSWORD = 'Hello@123'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
 
 
 TEMPLATES = [
@@ -179,6 +177,5 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
 
 AUTH_USER_MODEL = 'accounts.UserProfile'

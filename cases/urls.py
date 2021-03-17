@@ -10,7 +10,6 @@ urlpatterns = [
     path('getCaseById/<int:case_id>/',GetCaseDetail.as_view()),
     path('getAllChargedOfficer/',GetAllChargedOfficer.as_view()),
 
-
     path('getAllArticles/',GetAllArticles.as_view()),
     path('sourceComplaint/',GetSourceOfComplaint.as_view()),
     path('getAllCase/',GetAllChargeSheet.as_view()),
@@ -26,7 +25,6 @@ urlpatterns = [
 
     path('misconductType/', MisconductTypeLIST.as_view()),
     path('misconductType/<int:pk>', MisconductTypeDetail.as_view()),
-
 
     path('faceDetection/',FaceDetection.as_view()),
 

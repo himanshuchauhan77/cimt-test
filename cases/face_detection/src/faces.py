@@ -1,17 +1,18 @@
 import numpy as np
 import cv2
 import pickle
+from django.conf import settings
 
-face_cascade = cv2.CascadeClassifier('/home/himanshu/Project/cimt-project/cases/face_detection/src/cascades/data/haarcascade_frontalface_alt2.xml')
-eye_cascade = cv2.CascadeClassifier('/home/himanshu/Project/cimt-project/cases/face_detection/src/cascades/data/haarcascade_eye.xml')
-smile_cascade = cv2.CascadeClassifier('/home/himanshu/Project/cimt-project/cases/face_detection/src/cascades/data/haarcascade_smile.xml')
+face_cascade = cv2.CascadeClassifier(f'{settings.BASE_DIR}/cases/face_detection/src/cascades/data/haarcascade_frontalface_alt2.xml')
+eye_cascade = cv2.CascadeClassifier(f'{settings.BASE_DIR}/cases/face_detection/src/cascades/data/haarcascade_eye.xml')
+smile_cascade = cv2.CascadeClassifier(f'{settings.BASE_DIR}/cases/face_detection/src/cascades/data/haarcascade_smile.xml')
 
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("/home/himanshu/Project/cimt-project/cases/face_detection/src/recognizers/face-trainner.yml")
+recognizer.read(f"{settings.BASE_DIR}/cases/face_detection/src/recognizers/face-trainner.yml")
 
 labels = {"person_name": 1}
-with open("/home/himanshu/Project/cimt-project/cases/face_detection/src/pickles/face-labels.pickle", 'rb') as f:
+with open(f"{settings.BASE_DIR}/cases/face_detection/src/pickles/face-labels.pickle", 'rb') as f:
 	og_labels = pickle.load(f)
 	labels = {v:k for k,v in og_labels.items()}
 

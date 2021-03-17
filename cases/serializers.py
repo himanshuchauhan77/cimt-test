@@ -58,7 +58,7 @@ class CaseIdentitySerializer(serializers.ModelSerializer):
 
 
 class ChargedOfficerSerializer(serializers.ModelSerializer):
-    user = GetUserSerializer()
+    # user = GetUserSerializer()
 
     class Meta:
         model = ChargedOfficer

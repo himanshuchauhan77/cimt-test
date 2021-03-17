@@ -99,13 +99,13 @@ class AddEvidence(APIView):
 #
 #     def get(self,request,case_no):
 #         try:
-#             data = get_all_evidence(request,case_no)
+#             data = casecontroller.get_all_evidence(request,case_no)
 #             return JsonResponse({'data': data,"success":True,"error":""})
 #         except Exception as e:
 #             error = str(e)
 #             return JsonResponse({'data': "", "success":True,"error":error})
 #
-#
+# #
 #
 #     # def get(self,id):
 #     #     data = Evidence.objects.get(id = id)
@@ -188,6 +188,31 @@ class FaceDetection(APIView):
 
 # ---------------------- Article CRUD -----------------------
 
+
+class ArticleList(APIView):
+
+    def post(self, request):
+        data = casecontroller.add_article(request)
+        return Response(data)
+
+    def get(self, request):
+        data = casecontroller.get_all_articles(request)
+        return Response(data)
+
+
+class ArticleDetail(APIView):
+
+    def put(self, request, pk):
+        data = casecontroller.update_article(request, pk)
+        return Response(data)
+
+    def delete(self, request, pk):
+        data = casecontroller.delete_article(request, pk)
+        return Response(data)
+
+    def get(self,request,pk):
+        data = casecontroller.get_article(request,pk)
+        return Response(data)
 
 
 

@@ -5,7 +5,7 @@ import json
 
 from . import serializers
 from .serializers import CaseSerializer, AddEvidenceSerializer, ChargedOfficerSerializer
-from .models import Case, NatureOfMisconduct, SourceOfComplaint, Article
+from .models import Case, NatureOfMisconduct, SourceOfComplaint, Article, Evidence
 # from accounts.models import District
 from cases.matching import app
 
@@ -32,8 +32,18 @@ def add_case(request):
 
 def get_case_detail(request, case_id):
     case = Case.objects.get(case_id=case_id)
-    serializer = CaseSerializer(case)
-    j = json.dumps(serializer.data, default=str)
+    try:
+        serializer = CaseSerializer(case)
+        all_evidence = Evidence.objects.filter(case_no=case_id)
+        evidence_ser = AddEvidenceSerializer(all_evidence,many=True)
+        new_dict = {}
+        new_dict.update(serializer.data)
+        new_dict['evidences']=evidence_ser.data
+    except Exception as e:
+        new_dict2 = {"data": "", "success": True, "error": f"{str(e)}"}
+        return json.dumps(new_dict2, default=str)
+    new_dict2 = {"data":new_dict,"success":True,"error":""}
+    j = json.dumps(new_dict2, default=str)
     return j
     # print(serializer.data)
 
@@ -55,14 +65,7 @@ def get_all_sourceofcomplaint(request):
         return {"data": " ", "success": False, "error": str(e)}
     return {"data": data, "success": True, "error": " "}
 
-
-def get_all_articles(request):
-    try:
-        data = list(Article.objects.all().order_by('article_no').values())
-    except Exception as e:
-        print(str(e))
-        return {"data": " ", "success": False, "error": str(e)}
-    return {"data": data, "success": True, "error": " "}
+# ---------------------- Dashboard -------------------
 
 
 def get_cases_report(request):
@@ -123,7 +126,7 @@ def add_evidence(request):
             # fs = FileSystemStorage()
             # filename = fs.save(evidenceimg.name,evidenceimg)
             # uploaded_file_url = fs.url(filename)
-            print(serializer.validated_data)
+            # print(serializer.validated_data)
             obj = serializer.save()
             uploaded_file_url = obj.evidence_image.url
             # print(obj.evidence_image.name)
@@ -134,6 +137,9 @@ def add_evidence(request):
             # urllib.request.urlretrieve(uploaded_file_url,f"/home/himanshu/djangofull/Workspace/cimt/cases/matching/evidence/")
             match_status,img2,x,y = app.main(f"{obj.evidence_image}")
             if match_status:
+                obj.matched_image = img2
+                obj.match_status = match_status
+                obj.save()
                 return {"data": {"uploaded_file_url": f"{uploaded_file_url}", "match_status": f"{match_status}","matched_image":f"{img2}",\
                                  "keypoints_fig":f"{x}","matching_fig":f"{y}"},
                         "success": True, "error": ""}
@@ -142,17 +148,18 @@ def add_evidence(request):
     except Exception as e:
         return {"data": "", "success": False, "error": str(e)}
 
-# def get_all_evidence(request,case_no):
-#     """Returns all Evidence of according to a case"""
-#     all_evidence = Evidence.objects.filter(case_no = case_no)
-#     data = list(all_evidence.values())
-#     url = []
-#     for item in all_evidence:
-#         url.append(item.evidence_image.url)
-#     # print(url)
-#     for i in range(len(data)):
-#         data[i]['url'] = url[i]
-#     return data
+
+def get_all_evidence(request,case_no):
+    """Returns all Evidence of according to a case"""
+    all_evidence = Evidence.objects.filter(case_no = case_no)
+    data = list(all_evidence.values())
+    url = []
+    for item in all_evidence:
+        url.append(item.evidence_image.url)
+    # print(url)
+    for i in range(len(data)):
+        data[i]['url'] = url[i]
+    return data
 
 
 # def get_cases_by_district(request,id):
@@ -171,7 +178,8 @@ def get_all_charged_officer(request):
     serializer = ChargedOfficerSerializer(all_charged_officers,many=True)
     return {"charged_officers":serializer.data,"success":True,"error":""}
 
-# --------------------------------------------------------------------------
+# ----------------------- Nature Of Misconduct -------------------------------------
+
 
 def add_misconduct_type(request):
     # data = JSONParser().parse(request)
@@ -232,6 +240,8 @@ def delete_misconduct_type(request, pk):
         return {"data": "Misconduct Type Deleted Successfully ", "success": True, "error": " "}
 
 
+# ----------------------- Chargesheet --------------------
+
 def get_all_chargesheet(request):
     try:
         cases = Case.objects.all().order_by('case_id')
@@ -241,3 +251,67 @@ def get_all_chargesheet(request):
         print(str(e))
         return json.dumps({"data": " ", "success": False, "error": str(e)})
     return json.dumps({ "data": serializer.data,"success":True,"error":"" }, default=str)
+
+
+# --------------------------Articles ---------------------------------
+
+
+def add_article(request):
+    # data = JSONParser().parse(request)
+    serializer = serializers.ArticleSerializer(data=request.data)
+    try:
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+    except Exception as e:
+        return {"data": " ", "success": False, "error": str(e)}
+    return {"data": serializer.data, "success": True, "error": " "}
+
+
+def get_all_articles(request):
+    try:
+        all_articles = Article.objects.all()
+        serializer = serializers.ArticleSerializer(all_articles,many=True)
+    except Exception as e:
+        print(str(e))
+        return {"data": " ", "success": False, "error": str(e)}
+    return {"data": serializer.data, "success": True, "error": " "}
+
+
+def get_article(request,pk):
+    try:
+        article = Article.objects.get(pk=pk)
+        serializer = serializers.ArticleSerializer(article)
+    except NatureOfMisconduct.DoesNotExist:
+        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+    except Exception as e:
+        return {"data":" ","success":True,"error":str(e)}
+    else:
+        return {"data":serializer.data,"success":True,"error":" "}
+
+
+def update_article(request, pk):
+    try:
+        article = Article.objects.get(pk=pk)
+        # data = JSONParser().parse(request)
+        serializer = serializers.ArticleSerializer(article, data = request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+    except Article.DoesNotExist:
+        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+    except Exception as e:
+        return {"data": " ", "success": False, "error": str(e)}
+    else:
+        return {"data": serializer.data, "success": True, "error": " "}
+
+
+def delete_article(request, pk):
+    try:
+        article = Article.objects.get(pk=pk)
+        article.delete()
+    except Article.DoesNotExist:
+        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+    except Exception as e:
+        return {"data": " ", "success": False, "error": str(e)}
+    else:
+        return {"data": "Misconduct Type Deleted Successfully ", "success": True, "error": " "}
+
