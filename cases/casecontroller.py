@@ -297,7 +297,7 @@ def update_article(request, pk):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
     except Article.DoesNotExist:
-        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+        return {"data": " ", "success": True, "error": "Article Does Not Exist"}
     except Exception as e:
         return {"data": " ", "success": False, "error": str(e)}
     else:
@@ -309,9 +309,9 @@ def delete_article(request, pk):
         article = Article.objects.get(pk=pk)
         article.delete()
     except Article.DoesNotExist:
-        return {"data": " ", "success": True, "error": "Office Does Not Exist"}
+        return {"data": " ", "success": True, "error": "Article Does Not Exist"}
     except Exception as e:
         return {"data": " ", "success": False, "error": str(e)}
     else:
-        return {"data": "Misconduct Type Deleted Successfully ", "success": True, "error": " "}
+        return {"data": "Article Deleted Successfully ", "success": True, "error": " "}
 

@@ -79,7 +79,6 @@ class GetDistrictReport(APIView):
 
 
 class AddEvidence(APIView):
-
     def post(self,request):
         data = add_evidence(request)
         # kwargs = dict(request.data)
@@ -94,7 +93,7 @@ class AddEvidence(APIView):
         # evidence.save()
         return Response(data)
 
-#
+
 # class GetAllEvidence(APIView):
 #
 #     def get(self,request,case_no):
@@ -202,17 +201,17 @@ class ArticleList(APIView):
 
 class ArticleDetail(APIView):
 
-    def put(self, request, pk):
-        data = casecontroller.update_article(request, pk)
-        return Response(data)
+        def put(self, request, pk):
+            data = casecontroller.update_article(request, pk)
+            return Response(data)
 
-    def delete(self, request, pk):
-        data = casecontroller.delete_article(request, pk)
-        return Response(data)
+        def delete(self, request, pk):
+            data = casecontroller.delete_article(request, pk)
+            return Response(data)
 
-    def get(self,request,pk):
-        data = casecontroller.get_article(request,pk)
-        return Response(data)
+        def get(self,request,pk):
+            data = casecontroller.get_article(request,pk)
+            return Response(data)
 
 
 
