@@ -5,13 +5,13 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
-
 class AddRoleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
         fields = ['name','description']
         # extra_kwargs = {'name':{'required':True}}
+
 
 class DesignationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,9 +42,6 @@ class AddUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         exclude = ['password','is_staff','is_active']
-
-
-
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -80,7 +77,6 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(required=True)
 
 
-
 class CustomTokenSerializer(serializers.Serializer):
     token = serializers.CharField()
 
@@ -92,7 +88,7 @@ class DistrictSerializer(serializers.ModelSerializer):
 
 
 class OfficeSerializer(serializers.ModelSerializer):
-    district = DistrictSerializer()
+    # district = DistrictSerializer()
 
     class Meta:
         model = models.Office

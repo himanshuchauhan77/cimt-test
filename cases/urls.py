@@ -29,8 +29,6 @@ urlpatterns = [
     path('articles/',ArticleList.as_view()),
     path('articles<int:pk>/',ArticleDetail.as_view()),
 
-
-
     path('faceDetection/',FaceDetection.as_view()),
 
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

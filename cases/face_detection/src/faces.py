@@ -7,7 +7,6 @@ face_cascade = cv2.CascadeClassifier(f'{settings.BASE_DIR}/cases/face_detection/
 eye_cascade = cv2.CascadeClassifier(f'{settings.BASE_DIR}/cases/face_detection/src/cascades/data/haarcascade_eye.xml')
 smile_cascade = cv2.CascadeClassifier(f'{settings.BASE_DIR}/cases/face_detection/src/cascades/data/haarcascade_smile.xml')
 
-
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read(f"{settings.BASE_DIR}/cases/face_detection/src/recognizers/face-trainner.yml")
 
